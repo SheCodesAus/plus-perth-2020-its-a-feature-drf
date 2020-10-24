@@ -9,9 +9,12 @@ class Bucket(models.Model):
     percentage = models.IntegerField()
     parent_bucket = models.IntegerField()
 
+
 class Transaction(models.Model):
     income = models.FloatField()
-    date_created =  models.DateTimeField(auto_now_add=True)
+    date_created = models.DateTimeField(auto_now_add=True)
+    receipt = models.TextField()
+
 
 class Icon(models.Model):
     name = models.CharField(max_length=20)
