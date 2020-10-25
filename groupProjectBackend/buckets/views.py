@@ -54,6 +54,11 @@ class BucketDetail(APIView):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
+    def delete(self, request, pk ,format=None):
+        bucket = self.get_object(pk)
+        bucket.delete()
+        return Response("Bucket and Children Deleted", status=status.HTTP_204_NO_CONTENT)
+
 
 
 
