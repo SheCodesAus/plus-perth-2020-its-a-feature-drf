@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import Bucket, Transaction, Icon
 
-# Register your models here.
+@admin.register(Bucket)
+class BucketAdmin(admin.ModelAdmin):
+    pass

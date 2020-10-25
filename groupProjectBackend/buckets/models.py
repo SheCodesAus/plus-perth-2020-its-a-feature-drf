@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 
 # Create your models here.
@@ -13,6 +14,11 @@ class Bucket(models.Model):
         on_delete=models.CASCADE, 
         blank=True, null=True
         )
+    owner = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.CASCADE,
+        related_name='buckets'
+    )
     
 
 
@@ -20,6 +26,11 @@ class Transaction(models.Model):
     income = models.FloatField()
     date_created =  models.DateTimeField(auto_now_add=True)
     receipt = models.CharField(max_length=5000)
+    owner = models.ForeignKey(
+        get_user_model(),
+        on_delete=models.CASCADE,
+        related_name='transactions'
+    )
 
 class Icon(models.Model):
     name = models.CharField(max_length=20)
