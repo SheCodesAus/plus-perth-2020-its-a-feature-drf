@@ -11,14 +11,26 @@ class TransactionSerializer(serializers.Serializer):
     def create(self, validated_data):
         return Transaction.objects.create(**validated_data)
 
-class BucketSerializer(serializers.Serializer):
-    id = serializers.ReadOnlyField()
-    name = serializers.CharField(max_length=20)
-    description = serializers.CharField(max_length=50, required=False)
-    is_active = serializers.BooleanField(default=1)
-    min_amt = serializers.FloatField(required=False, allow_null=True)
-    percentage = serializers.IntegerField()
-    parent_bucket = serializers.IntegerField(required=False, allow_null=True)
+class RecursiveSerializer(serializers.Serializer):
+    def to_representation(self, value):
+        serializer = self.parent.parent.__class__(value, context=self.context)
+        return serializer.data
+
+class BucketSerializer(serializers.ModelSerializer):
+    children = RecursiveSerializer(many=True, read_only=True)
+    
+    class Meta:
+        model = Bucket
+        fields = (
+            'id',
+            'name',
+            'description',
+            'is_active',
+            'min_amt',
+            'percentage',
+            'parent_bucket',
+            'children'
+            )
 
     def create(self, validated_data):
         return Bucket.objects.create(**validated_data)

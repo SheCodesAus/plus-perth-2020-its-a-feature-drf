@@ -12,6 +12,7 @@ class BucketList(APIView):
         buckets = Bucket.objects.all()
         serializer = BucketSerializer(buckets, many=True)
         return Response(serializer.data)
+
     
     def post(self, request):
         serializer = BucketSerializer(data=request.data)
