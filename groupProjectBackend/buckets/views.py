@@ -9,7 +9,8 @@ from .serializers import TransactionSerializer, BucketSerializer, BucketDetailSe
 class BucketList(APIView):
 
     def get(self, request):
-        buckets = Bucket.objects.all()
+        # buckets = Bucket.objects.all()
+        buckets = Bucket.objects.filter(parent_bucket__isnull=True)
         serializer = BucketSerializer(buckets, many=True)
         return Response(serializer.data)
 
@@ -75,8 +76,7 @@ class TransactionList(APIView):
         serializer = TransactionSerializer(data=request.data)
         
         if serializer.is_valid():
-            print(serializer.data)
-            serializer.save
+            serializer.save(),
             return Response(
                 serializer.data,
                 status=status.HTTP_201_CREATED
