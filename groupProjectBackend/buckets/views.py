@@ -2,15 +2,19 @@ from rest_framework import status, permissions
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from .permissions import IsOwner
 from .models import Transaction, Bucket, Icon
 from .serializers import TransactionSerializer, BucketSerializer, BucketDetailSerializer, IconSerializer
 
 # Create your views here.
 class BucketList(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+
 
     def get(self, request):
         # buckets = Bucket.objects.all()
-        buckets = Bucket.objects.filter(parent_bucket__isnull=True)
+        buckets = Bucket.objects.filter(owner=request.user, parent_bucket__isnull=True)
         serializer = BucketSerializer(buckets, many=True)
         return Response(serializer.data)
 
@@ -28,10 +32,14 @@ class BucketList(APIView):
         )
 
 class BucketDetail(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
+
 
     def get_object(self, pk):
         try:
-            return Bucket.objects.get(pk=pk)
+            bucket = Bucket.objects.get(pk=pk)
+            self.check_object_permissions(self.request, bucket)
+            return
         except Bucket.DoesNotExist:
             raise Http404
 
