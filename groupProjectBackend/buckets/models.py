@@ -29,7 +29,7 @@ class Transaction(models.Model):
     owner = models.ForeignKey(
         get_user_model(),
         on_delete=models.CASCADE,
-        related_name='history'
+        related_name='transactions'
     )
 
 class Icon(models.Model):
