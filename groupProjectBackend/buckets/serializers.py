@@ -18,11 +18,13 @@ class RecursiveSerializer(serializers.Serializer):
 
 class BucketSerializer(serializers.ModelSerializer):
     children = RecursiveSerializer(many=True, read_only=True)
+    owner = serializers.ReadOnlyField(source='owner.id')
     
     class Meta:
         model = Bucket
         fields = (
             'id',
+            'owner',
             'name',
             'description',
             'is_active',

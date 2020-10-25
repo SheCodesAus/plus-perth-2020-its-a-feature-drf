@@ -1,0 +1,62 @@
+{
+    "id": 1,
+    "name": "Personal Expenses",
+    "description": "",
+    "is_active": true,
+    "min_amt": 250.0,
+    "percentage": 15,
+    "parent_bucket": null,
+    "children": [
+        {
+            "id": 2,
+            "name": "Holidays",
+            "description": "",
+            "is_active": true,
+            "min_amt": null,
+            "percentage": 15,
+            "parent_bucket": 1,
+            "children": [
+                {
+                    "id": 6,
+                    "name": "Flights",
+                    "description": "",
+                    "is_active": true,
+                    "min_amt": null,
+                    "percentage": 20,
+                    "parent_bucket": 2,
+                    "children": []
+                },
+                {
+                    "id": 7,
+                    "name": "Accommodation",
+                    "description": "",
+                    "is_active": true,
+                    "min_amt": null,
+                    "percentage": 30,
+                    "parent_bucket": 2,
+                    "children": []
+                },
+                {
+                    "id": 8,
+                    "name": "Activities",
+                    "description": "",
+                    "is_active": true,
+                    "min_amt": null,
+                    "percentage": 50,
+                    "parent_bucket": 2,
+                    "children": []
+                }
+            ]
+        },
+        {
+            "id": 5,
+            "name": "Rent",
+            "description": "",
+            "is_active": true,
+            "min_amt": null,
+            "percentage": 10,
+            "parent_bucket": 1,
+            "children": []
+        }
+    ]
+}
