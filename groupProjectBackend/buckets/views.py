@@ -72,7 +72,7 @@ class TransactionList(APIView):
     permission_classes = [permissions.IsAuthenticated, IsOwner]
 
     def get(self, request):
-        transactions = Transaction.objects.filter(owner=request.user)
+        transactions = Transaction.objects.filter(owner=request.user).order_by('-date_created')
         serializer = TransactionSerializer(transactions, many=True)
         return Response(serializer.data)
 

@@ -44,7 +44,7 @@ class TransactionSerializer(serializers.Serializer):
     owner = serializers.ReadOnlyField (source='owner.id')
     income = serializers.FloatField()
     date_created = serializers.ReadOnlyField()
-    receipt = serializers.CharField(max_length=5000)
+    receipt = serializers.JSONField()
 
     def create(self, validated_data):
         return Transaction.objects.create(**validated_data)
@@ -56,8 +56,6 @@ class TransactionDetailSerializer(TransactionSerializer):
         instance.receipt = validated_data.get('receipt', instance.receipt)
         instance.save()
         return instance
-
-        
 
 
 class IconSerializer(serializers.Serializer):
