@@ -30,43 +30,43 @@ class BucketList(APIView):
 
 class BucketDetail(APIView):
     permission_classes = [permissions.IsAuthenticated, IsOwner]
+    # def get_queryset(self):
+    #     return self.queryset.filter(owner=self.request.user)
 
     def get_object(self, pk):
         try:
-            return Bucket.objects.get(pk=pk)
+            bucket = Bucket.objects.get(pk=pk)
+            self.check_object_permissions(self.request, bucket)
+            return bucket
         except Bucket.DoesNotExist:
             raise Http404
 
     def get(self, request, pk):
         bucket = self.get_object(pk)
-        if bucket.owner == request.user:
-            serializers = BucketSerializer(bucket)
-            return Response(serializers.data)
-        return Response("Not Authorised")
+        serializers = BucketSerializer(bucket)
+        return Response(serializers.data)
 
     def put(self, request, pk):
         bucket = self.get_object(pk)
-        if bucket.owner == request.user:
-            data = request.data
-            serializer = BucketDetailSerializer(
-                instance=bucket,
-                data=data,
-                partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        return Response("Not Authorised")
+        data = request.data
+        serializer = BucketDetailSerializer(
+            instance=bucket,
+            data=data,
+            partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
 
     def delete(self, request, pk ,format=None):
-        bucket = self.get_object(pk)
-        if bucket.owner == request.user:
-            bucket.delete()
-            return Response("Bucket and Children Deleted", status=status.HTTP_204_NO_CONTENT)
-        return Response("Not Authorised")
+        bucket = self.get_object(pk) 
+        bucket.delete()
+        return Response("Bucket Tree Deleted", status=status.HTTP_204_NO_CONTENT)
+
 
 
 
