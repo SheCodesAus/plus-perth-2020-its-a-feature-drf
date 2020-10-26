@@ -1,3 +1,4 @@
+// BucketList...
 {
     "id": 1,
     "name": "Personal Expenses",
@@ -60,3 +61,100 @@
         }
     ]
 }
+
+// TransactionList...
+[
+    {
+    "id": 2,
+    "owner": 1,
+    "income": 6000,
+    "date_created": "2020-10-26T14:04:56.747841+08:00",
+	"receipt": [
+    {
+        "name": "tax",
+        "description": "",
+        "percentage": 40
+    },
+    {
+        "name": "savings",
+        "percentage": 20
+    },
+    {
+        "name": "expenses",
+        "description": "",
+        "percentage": 40,
+        "children": [
+            {
+                "name": "rent",
+                "description": "",
+                "min_amt": null,
+                "percentage": 50,
+                "parent_bucket": 3,
+                "children": []
+            },
+            {
+                "name": "bills",
+                "description": "",
+                "min_amt": null,
+                "percentage": 25,
+                "parent_bucket": 3,
+                "children": []
+            },
+            {
+                "name": "groceries",
+                "description": "",
+                "percentage": 25,
+                "parent_bucket": 3,
+                "children": []
+            }
+        ]
+    },
+    {
+        "id": 1,
+        "owner": 1,
+        "income": 3000,
+        "date_created": "2020-10-25T14:04:56.747841+08:00",
+        "receipt": [
+        {
+            "name": "tax",
+            "description": "",
+            "percentage": 40
+        },
+        {
+            "name": "savings",
+            "percentage": 20
+        },
+        {
+            "name": "expenses",
+            "description": "",
+            "percentage": 40,
+            "children": [
+                {
+                    "name": "rent",
+                    "description": "",
+                    "min_amt": null,
+                    "percentage": 50,
+                    "parent_bucket": 3,
+                    "children": []
+                },
+                {
+                    "name": "bills",
+                    "description": "",
+                    "min_amt": null,
+                    "percentage": 25,
+                    "parent_bucket": 3,
+                    "children": []
+                },
+                {
+                    "name": "groceries",
+                    "description": "",
+                    "percentage": 25,
+                    "parent_bucket": 3,
+                    "children": []
+                }
+            ]
+        },
+
+]
+
+
