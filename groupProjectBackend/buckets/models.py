@@ -19,7 +19,12 @@ class Bucket(models.Model):
         on_delete=models.CASCADE,
         related_name='buckets'
     )
+
+    def __str__(self):
+        return self.name
     
+    class Meta:
+        ordering = ['id']
 
 
 class Transaction(models.Model):
@@ -31,6 +36,9 @@ class Transaction(models.Model):
         on_delete=models.CASCADE,
         related_name='transactions'
     )
+
+    class Meta:
+        ordering = ['id']
 
 class Icon(models.Model):
     name = models.CharField(max_length=20)
