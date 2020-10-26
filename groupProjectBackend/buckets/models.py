@@ -5,6 +5,7 @@ from django.db import models
 class Bucket(models.Model):
     name = models.CharField(max_length=20)
     description = models.CharField(max_length=50, blank=True)
+    icon = models.CharField(max_length=20, blank=True)
     is_active = models.BooleanField(default=1)
     min_amt = models.FloatField(blank=True, null=True)
     percentage = models.IntegerField()
@@ -39,7 +40,3 @@ class Transaction(models.Model):
 
     class Meta:
         ordering = ['id']
-
-class Icon(models.Model):
-    name = models.CharField(max_length=20)
-    image = models.URLField()

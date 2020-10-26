@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Bucket, Transaction, Icon
+from .models import Bucket, Transaction
 
 @admin.register(Bucket)
 class BucketAdmin(admin.ModelAdmin):
