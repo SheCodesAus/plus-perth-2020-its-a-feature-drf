@@ -11,7 +11,6 @@ class BucketList(APIView):
     permission_classes = [permissions.IsAuthenticated, IsOwner]
 
     def get(self, request):
-        # buckets = Bucket.objects.all()
         buckets = Bucket.objects.filter(owner=request.user, parent_bucket__isnull=True)
         serializer = BucketSerializer(buckets, many=True)
         return Response(serializer.data)
@@ -33,40 +32,38 @@ class BucketDetail(APIView):
 
     def get_object(self, pk):
         try:
-            return Bucket.objects.get(pk=pk)
+            bucket = Bucket.objects.get(pk=pk)
+            self.check_object_permissions(self.request, bucket)
+            return bucket
         except Bucket.DoesNotExist:
             raise Http404
 
     def get(self, request, pk):
         bucket = self.get_object(pk)
-        if bucket.owner == request.user:
-            serializers = BucketSerializer(bucket)
-            return Response(serializers.data)
-        return Response("Not Authorised")
+        serializers = BucketSerializer(bucket)
+        return Response(serializers.data)
 
     def put(self, request, pk):
         bucket = self.get_object(pk)
-        if bucket.owner == request.user:
-            data = request.data
-            serializer = BucketDetailSerializer(
-                instance=bucket,
-                data=data,
-                partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        return Response("Not Authorised")
+        data = request.data
+        serializer = BucketDetailSerializer(
+            instance=bucket,
+            data=data,
+            partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
 
     def delete(self, request, pk ,format=None):
-        bucket = self.get_object(pk)
-        if bucket.owner == request.user:
-            bucket.delete()
-            return Response("Bucket and Children Deleted", status=status.HTTP_204_NO_CONTENT)
-        return Response("Not Authorised")
+        bucket = self.get_object(pk) 
+        bucket.delete()
+        return Response("Bucket Tree Deleted", status=status.HTTP_204_NO_CONTENT)
+
 
 
 
@@ -98,37 +95,35 @@ class TransactionDetail(APIView):
 
     def get_object(self, pk):
         try:
-            return Transaction.objects.get(pk=pk)
+            transaction = Transaction.objects.get(pk=pk)
+            self.check_object_permissions(self.request, transaction)
+            return transaction
         except Transaction.DoesNotExist:
             raise Http404
 
     def get(self, request, pk):
         transaction = self.get_object(pk)
-        if transaction.owner == request.user:
-            serializers = TransactionDetailSerializer(transaction)
-            return Response(serializers.data)
-        return Response("Not Authorised")
+        serializers = TransactionDetailSerializer(transaction)
+        return Response(serializers.data)
+ 
+################ Put method not required
+    # def put(self, request, pk):
+    #     transaction = self.get_object(pk)     
+    #     data = request.data
+    #     serializer = TransactionDetailSerializer(
+    #         instance=transaction,
+    #         data=data,
+    #         partial=True)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_200_OK)
+    #     return Response(
+    #         serializer.errors,
+    #         status=status.HTTP_400_BAD_REQUEST,
+    #     )
 
-    def put(self, request, pk):
-        transaction = self.get_object(pk)
-        if transaction.owner == request.user:
-            data = request.data
-            serializer = TransactionDetailSerializer(
-                instance=transaction,
-                data=data,
-                partial=True)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        return Response("Not Authorised")
 
     def delete(self, request, pk ,format=None):
         transaction = self.get_object(pk)
-        if transaction.owner == request.user:
-            transaction.delete()
-            return Response("Transaction Deleted", status=status.HTTP_204_NO_CONTENT)
-        return Response("Not Authorised")
+        transaction.delete()
+        return Response("Transaction Deleted", status=status.HTTP_204_NO_CONTENT)
