@@ -8,8 +8,6 @@ class CustomUserSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=200)
     email = serializers.CharField(max_length=200)
     password = serializers.CharField(write_only=True)
-    buckets = BucketSerializer(many=True, read_only=True)
-    history = TransactionSerializer(many=True, read_only=True)
     
     def create(self, validated_data):
         user = CustomUser.objects.create(username=validated_data['username'],
