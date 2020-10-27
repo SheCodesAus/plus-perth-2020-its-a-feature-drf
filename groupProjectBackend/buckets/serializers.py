@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Transaction, Bucket, Icon
+from .models import Transaction, Bucket
 
 class RecursiveSerializer(serializers.Serializer):
     def to_representation(self, value):
@@ -17,6 +17,7 @@ class BucketSerializer(serializers.ModelSerializer):
             'owner',
             'name',
             'description',
+            'icon',
             'is_active',
             'min_amt',
             'percentage',
@@ -32,6 +33,7 @@ class BucketDetailSerializer(BucketSerializer):
     def update(self, instance, validated_data):        
         instance.name = validated_data.get('name', instance.name)
         instance.description = validated_data.get('description', instance.description)
+        instance.icon = validated_data.get('icon', instance.icon)
         instance.is_active = validated_data.get('is_active', instance.is_active)
         instance.min_amt = validated_data.get('min_amt', instance.min_amt)
         instance.percentage = validated_data.get('percentage', instance.percentage)
@@ -39,12 +41,19 @@ class BucketDetailSerializer(BucketSerializer):
         instance.save()
         return instance
 
-class TransactionSerializer(serializers.Serializer):
-    id = serializers.ReadOnlyField()
+class TransactionSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField (source='owner.id')
-    income = serializers.FloatField()
-    date_created = serializers.ReadOnlyField()
-    receipt = serializers.CharField(max_length=5000)
+    receipt = serializers.JSONField()
+    
+    class Meta:
+        model = Transaction
+        fields = (
+            'id',
+            'owner',
+            'income',
+            'date_created',
+            'receipt'
+            )
 
     def create(self, validated_data):
         return Transaction.objects.create(**validated_data)
@@ -56,14 +65,3 @@ class TransactionDetailSerializer(TransactionSerializer):
         instance.receipt = validated_data.get('receipt', instance.receipt)
         instance.save()
         return instance
-
-        
-
-
-class IconSerializer(serializers.Serializer):
-    id = serializers.ReadOnlyField()
-    name = serializers.CharField()
-    image = serializers.CharField()
-
-    def create(self, validated_data):
-        return IconSerializer.objects.create(**validated_data)

@@ -3,8 +3,8 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .permissions import IsOwner
-from .models import Transaction, Bucket, Icon
-from .serializers import TransactionSerializer, TransactionDetailSerializer, BucketSerializer, BucketDetailSerializer, IconSerializer
+from .models import Transaction, Bucket
+from .serializers import TransactionSerializer, TransactionDetailSerializer, BucketSerializer, BucketDetailSerializer
 
 # Create your views here.
 class BucketList(APIView):
@@ -66,13 +66,11 @@ class BucketDetail(APIView):
 
 
 
-
-
 class TransactionList(APIView):
     permission_classes = [permissions.IsAuthenticated, IsOwner]
 
     def get(self, request):
-        transactions = Transaction.objects.filter(owner=request.user)
+        transactions = Transaction.objects.filter(owner=request.user).order_by('-date_created')
         serializer = TransactionSerializer(transactions, many=True)
         return Response(serializer.data)
 
@@ -105,23 +103,6 @@ class TransactionDetail(APIView):
         transaction = self.get_object(pk)
         serializers = TransactionDetailSerializer(transaction)
         return Response(serializers.data)
- 
-################ Put method not required
-    # def put(self, request, pk):
-    #     transaction = self.get_object(pk)     
-    #     data = request.data
-    #     serializer = TransactionDetailSerializer(
-    #         instance=transaction,
-    #         data=data,
-    #         partial=True)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data, status=status.HTTP_200_OK)
-    #     return Response(
-    #         serializer.errors,
-    #         status=status.HTTP_400_BAD_REQUEST,
-    #     )
-
 
     def delete(self, request, pk ,format=None):
         transaction = self.get_object(pk)
