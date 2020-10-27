@@ -1,7 +1,8 @@
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, permissions
+from .permissions import IsOwner
 from .models import CustomUser
 from .serializers import CustomUserSerializer
 
@@ -9,8 +10,10 @@ from django.db import IntegrityError
 from rest_framework.exceptions import ParseError
 
 class CustomUserList(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
+
     def get(self, request):
-        users = CustomUser.objects.all()
+        users = CustomUser.objects.filter(id=request.user.id)
         serializer = CustomUserSerializer(users, many=True)
         return Response(serializer.data)
 
@@ -34,9 +37,14 @@ class CustomUserList(APIView):
 
 
 class CustomUserDetail(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
+    
     def get_object(self, pk):
         try:
-            return CustomUser.objects.get(pk=pk)
+            # return CustomUser.objects.get(pk=pk)
+            user = CustomUser.objects.get(pk=pk)
+            self.check_object_permissions(self.request, user)
+            return user
         except CustomUser.DoesNotExist:
             raise Http404
     
