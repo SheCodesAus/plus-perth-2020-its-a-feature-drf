@@ -2,7 +2,7 @@ from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
-from .permissions import IsOwner
+from .permissions import IsOwner, IsNotAuthenticated
 from .models import CustomUser
 from .serializers import CustomUserSerializer
 
@@ -10,7 +10,7 @@ from django.db import IntegrityError
 from rest_framework.exceptions import ParseError
 
 class CustomUserList(APIView):
-    permission_classes = [permissions.IsAuthenticated, IsOwner]
+    permission_classes = [IsNotAuthenticated]
 
     def get(self, request):
         users = CustomUser.objects.filter(id=request.user.id)
