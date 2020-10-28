@@ -23,6 +23,11 @@ class Bucket(models.Model):
 
     def __str__(self):
         return self.name
+
+    def display_children(self):
+        return ', '.join(children.name for children in self.children.all()[:3])
+    
+    display_children.short_description = 'Children'
     
     class Meta:
         ordering = ['id']
@@ -39,4 +44,4 @@ class Transaction(models.Model):
     )
 
     class Meta:
-        ordering = ['id']
+        ordering = ['-id']
