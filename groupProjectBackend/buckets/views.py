@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .permissions import IsOwner
 from .models import Transaction, Bucket
-from .serializers import TransactionSerializer, TransactionDetailSerializer, BucketSerializer, BucketDetailSerializer
+from .serializers import TransactionSerializer, TransactionDetailSerializer, BucketSerializer, BucketDetailSerializer, BucketListSerializer
 
 # Create your views here.
 class BucketList(APIView):
@@ -26,6 +26,14 @@ class BucketList(APIView):
           serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
+
+class BucketListDropdown(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
+
+    def get(self, request):
+        buckets = Bucket.objects.filter(owner=request.user).order_by('name')
+        serializer = BucketListSerializer(buckets, many=True)
+        return Response(serializer.data)
 
 class BucketDetail(APIView):
     permission_classes = [permissions.IsAuthenticated, IsOwner]
