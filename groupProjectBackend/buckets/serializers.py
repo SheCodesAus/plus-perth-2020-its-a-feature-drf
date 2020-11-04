@@ -28,6 +28,16 @@ class BucketSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return Bucket.objects.create(**validated_data)
 
+
+class BucketListSerializer(serializers.ModelSerializer):
+    owner = serializers.ReadOnlyField(source='owner.id')
+    class Meta:
+        model = Bucket
+        fields = (
+            'id',
+            'owner',
+            'name')
+
 class BucketDetailSerializer(BucketSerializer):
 
     def update(self, instance, validated_data):        
