@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Transaction, Bucket
+from .models import Transaction, Bucket, Expense
 
 class RecursiveSerializer(serializers.Serializer):
     def to_representation(self, value):
@@ -9,6 +9,8 @@ class RecursiveSerializer(serializers.Serializer):
 class BucketSerializer(serializers.ModelSerializer):
     children = RecursiveSerializer(many=True, read_only=True)
     owner = serializers.ReadOnlyField(source='owner.id')
+    expenses = serializers.SlugRelatedField(slug_field='name', many=True, read_only=True)
+    min_amt = serializers.ReadOnlyField()
     
     class Meta:
         model = Bucket
@@ -22,7 +24,9 @@ class BucketSerializer(serializers.ModelSerializer):
             'min_amt',
             'percentage',
             'parent_bucket',
-            'children'
+            'children',
+            'expenses',
+            # 'total_expenses'
             )
 
     def create(self, validated_data):
@@ -31,12 +35,15 @@ class BucketSerializer(serializers.ModelSerializer):
 
 class BucketListSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.id')
+    expenses = serializers.ReadOnlyField(source='expenses.name')
     class Meta:
         model = Bucket
         fields = (
             'id',
             'owner',
-            'name')
+            'name',
+            'expenses',
+            )
 
 class BucketDetailSerializer(BucketSerializer):
 
@@ -73,5 +80,33 @@ class TransactionDetailSerializer(TransactionSerializer):
     def update(self, instance, validated_data):        
         instance.income = validated_data.get('income', instance.income)
         instance.receipt = validated_data.get('receipt', instance.receipt)
+        instance.save()
+        return instance
+
+
+class ExpenseSerializer(serializers.ModelSerializer):
+    bucket_id = serializers.ReadOnlyField(source='bucket.id')
+    bucket_name = serializers.ReadOnlyField(source='bucket.name')
+    
+    class Meta:
+        model = Expense
+        fields = (
+            'id',
+            'bucket_id',
+            'bucket_name',
+            'name',
+            'monthly_exp_amt',            
+            )
+
+    def create(self, validated_data):
+        return Expense.objects.create(**validated_data)
+
+class ExpenseDetailSerializer(ExpenseSerializer):
+    bucket_id = serializers.IntegerField()
+
+    def update(self, instance, validated_data):        
+        instance.name = validated_data.get('name', instance.name)
+        instance.monthly_exp_amt = validated_data.get('monthly_exp_amt', instance.monthly_exp_amt)
+        instance.bucket_id = validated_data.get('bucket_id', instance.bucket_id)
         instance.save()
         return instance
