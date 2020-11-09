@@ -24,7 +24,6 @@ class ExpenseSerializer(serializers.ModelSerializer):
         return Expense.objects.create(**validated_data)
 
 class ExpenseDetailSerializer(ExpenseSerializer):
-    bucket_id = serializers.IntegerField()
 
     def update(self, instance, validated_data):        
         instance.name = validated_data.get('name', instance.name)
