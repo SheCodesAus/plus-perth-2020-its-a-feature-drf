@@ -7,7 +7,7 @@ class RecursiveSerializer(serializers.Serializer):
         return serializer.data
 
 class ExpenseSerializer(serializers.ModelSerializer):
-    bucket_id = serializers.ReadOnlyField(source='bucket.id')
+    bucket_id = serializers.IntegerField()
     bucket_name = serializers.ReadOnlyField(source='bucket.name')
     
     class Meta:
