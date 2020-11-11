@@ -81,7 +81,6 @@ class BucketDetailSerializer(BucketSerializer):
         instance.description = validated_data.get('description', instance.description)
         instance.icon = validated_data.get('icon', instance.icon)
         instance.is_active = validated_data.get('is_active', instance.is_active)
-        instance.min_amt = validated_data.get('min_amt', instance.min_amt)
         instance.percentage = validated_data.get('percentage', instance.percentage)
         instance.parent_bucket = validated_data.get('parent_bucket', instance.parent_bucket)
         instance.save()
